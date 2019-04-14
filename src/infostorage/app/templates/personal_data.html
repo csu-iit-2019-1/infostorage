@@ -3,17 +3,30 @@
   <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
     <p>
+      {{ form.firstName.label }}<br>
+      {{ form.firstName(size=64) }}
+    </p>
+    <p>
+      {{ form.lastName.label }}<br>
+      {{ form.lastName(size=64) }}
+    </p>
+    <p>
       {{ form.username.label }}<br>
-      {{ form.username(size=32) }}
+      {{ form.username(size=64) }}
     </p>
     <p>
       {{ form.email.label }}<br>
-      {{ form.email(size=32) }}
+      {{ form.email(size=64) }}
     </p>
     <p>
       {{ form.phone.label }}<br>
-      {{ form.phone(size=32) }}
+      {{ form.phone(size=64) }}
     </p>
     <p>{{ form.submit() }}</p>
   </form>
+{% if form.errors %}
+	{% for fieldName, errorMessages in form.errors.items(): %}
+		<font color="red"><strong>Error: {{ fieldName }}:</strong>  {{ errorMessages }}</font><br>
+    {% endfor %}
+{% endif %}
 {% endblock %}
