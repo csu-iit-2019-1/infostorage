@@ -4,6 +4,9 @@ from app.models import UserData
 from app.forms import PersonalDataForm
 from requests.models import PreparedRequest
 
+import logging
+from logging.handlers import RotatingFileHandler
+from time import strftime
 
 @app.route('/admin/print_all/', methods=['GET'])
 def print_all():
@@ -47,6 +50,24 @@ def enter_new_data():
 		return render_template('personal_data.html', title='Infostorage - Personal Data', form=form, error=error)
 	else:
 		abort(404)
+
+@app.route('/logs/', methods=['GET'])
+def get_logs():
+        return render_template('app.log', title = 'Infostorage - Logs')		
+
+@app.after_request
+def after_request(response):
+    handler = RotatingFileHandler('app/templates/app.log')
+    logger = logging.getLogger('tdm')
+    logger.setLevel(logging.ERROR)
+
+    if (logger.hasHandlers()):
+        logger.handlers.clear()
+
+    logger.addHandler(handler)
+    timestamp = strftime('[%Y-%b-%d %H:%M]')
+    logger.error('%s %s %s %s %s %s <br>', timestamp, request.remote_addr, request.method, request.scheme, request.full_path, response.status)
+    return response
 
 def add_param_to_url(url, params):
 	req = PreparedRequest()
